@@ -2,10 +2,12 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const authRoutes = require('./routes/auth');
 const cartRoutes = require('./routes/cart');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const paymentRoutes = require('./routes/payment');
+const orderRoutes = require('./routes/order');  // Import your order routes
 
 const app = express();
 
@@ -15,6 +17,7 @@ app.use(cors({
   credentials: true
 }));
 
+// Middleware to parse JSON requests
 app.use(express.json());
 
 // Authentication middleware
@@ -33,11 +36,7 @@ const authenticate = (req, res, next) => {
   }
 };
 
-// Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/cart', cartRoutes);
-
-// Stripe Checkout Endpoint
+// Stripe Checkout Endpoint (for client to initiate checkout session)
 app.post('/api/create-checkout-session', authenticate, async (req, res) => {
   try {
     const { items, success_url, cancel_url } = req.body;
@@ -45,6 +44,9 @@ app.post('/api/create-checkout-session', authenticate, async (req, res) => {
     // Validate input
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ error: 'Invalid items data' });
+    }
+    if (!success_url || !cancel_url) {
+      return res.status(400).json({ error: 'Success and cancel URLs are required' });
     }
 
     // Create line items for Stripe
@@ -71,7 +73,7 @@ app.post('/api/create-checkout-session', authenticate, async (req, res) => {
       customer_email: req.user.email, // Pre-fill customer email
       metadata: {
         userId: req.user.id,
-        productIds: items.map(item => item.product_id).join(',')
+        productIds: items.map(item => item.product_id).join(','),
       }
     });
 
@@ -83,7 +85,7 @@ app.post('/api/create-checkout-session', authenticate, async (req, res) => {
 });
 
 // Webhook endpoint for Stripe (optional for handling post-payment events)
-app.post('/api/webhook', express.raw({type: 'application/json'}), async (req, res) => {
+app.post('/api/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature'];
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
@@ -107,13 +109,20 @@ app.post('/api/webhook', express.raw({type: 'application/json'}), async (req, re
       console.log(`Unhandled event type ${event.type}`);
   }
 
-  res.json({received: true});
+  res.json({ received: true });
 });
 
-// Health check
+// Health check endpoint
 app.get('/', (req, res) => {
   res.send('Bookstore API is running...');
 });
 
+// Use the imported routes
+app.use('/api/auth', authRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/payment', paymentRoutes);
+app.use('/api/orders', orderRoutes); // Register order routes here
+
+// Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
