@@ -5,6 +5,7 @@ A full-stack MERN (MySql, Express, React, Node.js) application for browsing and 
 ## Project Structure
 ```
 Online-bookshop-system/
+|── document/
 ├── frontend/               # React frontend
 │   ├── public/             # Static assets
 │   ├── src/                # React source code
