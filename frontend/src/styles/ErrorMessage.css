@@ -1,0 +1,9 @@
+/* src/styles/ErrorMessage.css */
+.error-message {
+    padding: 20px;
+    margin: 20px;
+    background-color: #ffebee;
+    color: #c62828;
+    border-radius: 4px;
+    text-align: center;
+  }
