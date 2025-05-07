@@ -1,0 +1,58 @@
+/* Success Page Container */
+.success-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f7fc;
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  /* Header Style */
+  .success-page h1 {
+    font-size: 2.5rem;
+    color: #4CAF50; /* Green color for success */
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  
+  /* Paragraph Style */
+  .success-page p {
+    font-size: 1.2rem;
+    color: #555555;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+  
+  /* Success Icon */
+  .success-page::before {
+    content: '✔';
+    font-size: 5rem;
+    color: #4CAF50;
+    margin-bottom: 20px;
+  }
+  
+  /* Button for Redirection (Optional) */
+  .success-page .button {
+    margin-top: 30px;
+    padding: 12px 25px;
+    background-color: #4CAF50;
+    color: #fff;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s;
+  }
+  
+  .success-page .button:hover {
+    background-color: #45a049;
+  }
+  
