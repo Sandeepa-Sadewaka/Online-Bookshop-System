@@ -155,14 +155,6 @@ function Profile() {
                     <p><span>Phone:</span> {user.phone || 'Not provided'}</p>
                   </div>
                 </div>
-
-                <div className="detail-section">
-                  <h3>Account Details</h3>
-                  <div className="detail-items">
-                    <p><span>Member since:</span> {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}</p>
-                    <p><span>Last updated:</span> {user.updatedAt ? new Date(user.updatedAt).toLocaleDateString() : 'N/A'}</p>
-                  </div>
-                </div>
               </div>
 
               <div className="profile-actions">
